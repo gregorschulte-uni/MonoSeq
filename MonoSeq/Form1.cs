@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
 
 using OmniDriver;
@@ -57,8 +58,10 @@ namespace MonoSeq
                 SpectrumTable.Rows.Add(row);
             }
 
-            for (int k = 100; k < 1000; k = k + 100)
+            for (int k = 300; k < 900; k = k + 25)
             {
+
+                myMonoScan.setPositionNM(k);
                 spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);
 
                 SpectrumTable.Columns.Add(k.ToString());
@@ -103,12 +106,31 @@ namespace MonoSeq
 
         }
 
+        private void btnRefreshSerialPortList_Click(object sender, EventArgs e)
+        {
+            updatePortList();
+        }
+
         private void frmMonoSeq_Load(object sender, EventArgs e)
         {
 
+            updatePortList();
             numberOfSpectrometers = wrapper.openAllSpectrometers();                            // update number of spectrometers attached to the Computer
             lblStatus.Text = numberOfSpectrometers.ToString() +" Spectrometer(s) found.";      // update the Status Label
 
+        }
+
+        private void btnInitializeMonoScan_Click(object sender, EventArgs e)
+        {
+            myMonoScan.openConnection(comboBoxSerialPort.Text);
+            myMonoScan.initialize();
+            myMonoScan.setPositionNM(532);
+        }
+
+        private void updatePortList()
+        {
+            string[] ports = SerialPort.GetPortNames();
+            comboBoxSerialPort.DataSource = ports;
         }
     }
 }
