@@ -84,7 +84,8 @@ namespace MonoSeq
 
 
             /////
-            //Write Datatable to file Start
+            // Write Datatable to file Start
+            // a FileBrowsing Dialog shuould be added here!
             ////
             StringBuilder sb = new StringBuilder();
             IEnumerable<string> columnNames = SpectrumTable.Columns.Cast<DataColumn>().Select(column => column.ColumnName);
