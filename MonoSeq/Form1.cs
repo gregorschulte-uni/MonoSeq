@@ -10,13 +10,16 @@ using System.Windows.Forms;
 using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
 
+using OmniDriver;
+using OOGdrv;
+
 
 namespace MonoSeq
 {
     public partial class frmMonoSeq : Form
     {
-
-        OmniDriver.CCoWrapper wrapper = new OmniDriver.CCoWrapper();
+        MonoScan myMonoScan = new MonoScan();
+        CCoWrapper wrapper = new CCoWrapper();
 
         int integrationTime = 80000;                // the number of microseconds for the integration time
         int numberOfPixels;                         // number of CCD elements/pixels provided by the spectrometer

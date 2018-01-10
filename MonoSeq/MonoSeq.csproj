@@ -36,6 +36,9 @@
     <Reference Include="NETOmniDriver-NET40">
       <HintPath>C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME\NETOmniDriver-NET40.dll</HintPath>
     </Reference>
+    <Reference Include="oogDrv">
+      <HintPath>C:\MonoScan\oogDrv.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
