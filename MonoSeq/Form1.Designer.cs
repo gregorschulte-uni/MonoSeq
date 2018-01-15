@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lblStatus = new System.Windows.Forms.Label();
             this.btnStartRun = new System.Windows.Forms.Button();
             this.chartSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -63,10 +63,10 @@
             // 
             // chartSpectrum
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartSpectrum.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartSpectrum.Legends.Add(legend1);
+            chartArea2.Name = "ChartArea1";
+            this.chartSpectrum.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartSpectrum.Legends.Add(legend2);
             this.chartSpectrum.Location = new System.Drawing.Point(15, 13);
             this.chartSpectrum.Name = "chartSpectrum";
             this.chartSpectrum.Size = new System.Drawing.Size(898, 462);
@@ -108,7 +108,7 @@
             // 
             this.btnInitializeMonoScan.Location = new System.Drawing.Point(7, 48);
             this.btnInitializeMonoScan.Name = "btnInitializeMonoScan";
-            this.btnInitializeMonoScan.Size = new System.Drawing.Size(75, 23);
+            this.btnInitializeMonoScan.Size = new System.Drawing.Size(174, 23);
             this.btnInitializeMonoScan.TabIndex = 2;
             this.btnInitializeMonoScan.Text = "Initialize MonoScan";
             this.btnInitializeMonoScan.UseVisualStyleBackColor = true;

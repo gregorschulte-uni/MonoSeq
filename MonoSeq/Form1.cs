@@ -49,11 +49,11 @@ namespace MonoSeq
 
             wavelengthArray = (double[])wrapper.getWavelengths(selectedSpectrometer);
 
-            SpectrumTable.Columns.Add("Wavelenght");
+            SpectrumTable.Columns.Add("Wavelength");
             for (int i = 0; i < spectrumArray.GetLength(0); i++)
             {
                 row = SpectrumTable.NewRow();
-                row["Wavelenght"] = Math.Round(wavelengthArray[i], 2);
+                row["Wavelength"] = Math.Round(wavelengthArray[i], 2);
 
                 SpectrumTable.Rows.Add(row);
             }
@@ -103,6 +103,7 @@ namespace MonoSeq
 
 
 
+            Console.WriteLine("");
 
 
         }
@@ -118,7 +119,7 @@ namespace MonoSeq
             updatePortList();
             numberOfSpectrometers = wrapper.openAllSpectrometers();                            // update number of spectrometers attached to the Computer
             lblStatus.Text = numberOfSpectrometers.ToString() +" Spectrometer(s) found.";      // update the Status Label
-
+            
         }
 
         private void btnInitializeMonoScan_Click(object sender, EventArgs e)
