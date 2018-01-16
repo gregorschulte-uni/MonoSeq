@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lblStatus = new System.Windows.Forms.Label();
             this.btnStartRun = new System.Windows.Forms.Button();
             this.chartSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -50,6 +50,8 @@
             this.buttonRefreshSpectrometer = new System.Windows.Forms.Button();
             this.comboBoxSpectrometer = new System.Windows.Forms.ComboBox();
             this.saveFileDialogMonoSeq = new System.Windows.Forms.SaveFileDialog();
+            this.checkBoxElectricDarkCorrection = new System.Windows.Forms.CheckBox();
+            this.checkBoxNonLinearityCorrection = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartSpectrum)).BeginInit();
             this.groupBoxMonoScan.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanInterval)).BeginInit();
@@ -81,10 +83,10 @@
             // 
             // chartSpectrum
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartSpectrum.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartSpectrum.Legends.Add(legend2);
+            chartArea4.Name = "ChartArea1";
+            this.chartSpectrum.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.chartSpectrum.Legends.Add(legend4);
             this.chartSpectrum.Location = new System.Drawing.Point(15, 13);
             this.chartSpectrum.Name = "chartSpectrum";
             this.chartSpectrum.Size = new System.Drawing.Size(898, 462);
@@ -250,6 +252,8 @@
             // groupBoxSpectrometer
             // 
             this.groupBoxSpectrometer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxSpectrometer.Controls.Add(this.checkBoxNonLinearityCorrection);
+            this.groupBoxSpectrometer.Controls.Add(this.checkBoxElectricDarkCorrection);
             this.groupBoxSpectrometer.Controls.Add(this.buttonSpectrometerAutomaticIntegrationTime);
             this.groupBoxSpectrometer.Controls.Add(this.lblSpectrometerIntegrationTime);
             this.groupBoxSpectrometer.Controls.Add(this.numericUpDownSpectrometerIntegrationTime);
@@ -265,12 +269,13 @@
             // buttonSpectrometerAutomaticIntegrationTime
             // 
             this.buttonSpectrometerAutomaticIntegrationTime.Enabled = false;
-            this.buttonSpectrometerAutomaticIntegrationTime.Location = new System.Drawing.Point(14, 75);
+            this.buttonSpectrometerAutomaticIntegrationTime.Location = new System.Drawing.Point(306, 45);
             this.buttonSpectrometerAutomaticIntegrationTime.Name = "buttonSpectrometerAutomaticIntegrationTime";
             this.buttonSpectrometerAutomaticIntegrationTime.Size = new System.Drawing.Size(75, 23);
             this.buttonSpectrometerAutomaticIntegrationTime.TabIndex = 4;
             this.buttonSpectrometerAutomaticIntegrationTime.Text = "Auto";
             this.buttonSpectrometerAutomaticIntegrationTime.UseVisualStyleBackColor = true;
+            this.buttonSpectrometerAutomaticIntegrationTime.Click += new System.EventHandler(this.buttonSpectrometerAutomaticIntegrationTime_Click);
             // 
             // lblSpectrometerIntegrationTime
             // 
@@ -330,6 +335,30 @@
             this.saveFileDialogMonoSeq.RestoreDirectory = true;
             this.saveFileDialogMonoSeq.ShowHelp = true;
             // 
+            // checkBoxElectricDarkCorrection
+            // 
+            this.checkBoxElectricDarkCorrection.AutoSize = true;
+            this.checkBoxElectricDarkCorrection.Checked = true;
+            this.checkBoxElectricDarkCorrection.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxElectricDarkCorrection.Location = new System.Drawing.Point(14, 75);
+            this.checkBoxElectricDarkCorrection.Name = "checkBoxElectricDarkCorrection";
+            this.checkBoxElectricDarkCorrection.Size = new System.Drawing.Size(138, 17);
+            this.checkBoxElectricDarkCorrection.TabIndex = 5;
+            this.checkBoxElectricDarkCorrection.Text = "Electric Dark Correction";
+            this.checkBoxElectricDarkCorrection.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxNonLinearityCorrection
+            // 
+            this.checkBoxNonLinearityCorrection.AutoSize = true;
+            this.checkBoxNonLinearityCorrection.Checked = true;
+            this.checkBoxNonLinearityCorrection.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxNonLinearityCorrection.Location = new System.Drawing.Point(14, 99);
+            this.checkBoxNonLinearityCorrection.Name = "checkBoxNonLinearityCorrection";
+            this.checkBoxNonLinearityCorrection.Size = new System.Drawing.Size(139, 17);
+            this.checkBoxNonLinearityCorrection.TabIndex = 6;
+            this.checkBoxNonLinearityCorrection.Text = "Non Linearity Correction";
+            this.checkBoxNonLinearityCorrection.UseVisualStyleBackColor = true;
+            // 
             // frmMonoSeq
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -379,6 +408,8 @@
         private System.Windows.Forms.Label lblMonoScanStartWL;
         private System.Windows.Forms.Button buttonSpectrometerAutomaticIntegrationTime;
         private System.Windows.Forms.SaveFileDialog saveFileDialogMonoSeq;
+        private System.Windows.Forms.CheckBox checkBoxNonLinearityCorrection;
+        private System.Windows.Forms.CheckBox checkBoxElectricDarkCorrection;
     }
 }
 

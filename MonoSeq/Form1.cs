@@ -25,11 +25,12 @@ namespace MonoSeq
         CCoWrapper wrapper = new CCoWrapper();
 
         // initialize own variables
-        int integrationTime = 80000;                // the number of microseconds for the integration time
+        int integrationTime = 8000;                 // the number of microseconds for the integration time
         int numberOfPixels;                         // number of CCD elements/pixels provided by the spectrometer
         int numberOfSpectrometers;                  // actually attached and talking to us
         int selectedSpectrometer = 0;               // selected Spectrometer    
         double[] spectrumArray, wavelengthArray;    // pixel values from the CCD elements and  wavelengths (in nanometers) corresponding to each CCD element
+        int saturationevents = 0;
 
         System.Data.DataTable SpectrumTable = new DataTable("SpectrumTable");   // Create datatable for data storage
         //DataColumn column;                          // not used, can probably be deleted
@@ -49,16 +50,38 @@ namespace MonoSeq
 
         private void btnStartRun_Click(object sender, EventArgs e)
         {
+            saturationevents = 0;
+
+            chartSpectrum.ChartAreas[0].AxisX.Minimum = Convert.ToInt32(numericUpDownMonoScanStartWL.Value);
+            chartSpectrum.ChartAreas[0].AxisX.Maximum = Convert.ToInt32(numericUpDownMonoScanEndWL.Value);
+            chartSpectrum.ChartAreas[0].AxisY.Minimum = -100;
+
+            //  delete content of datatable from previous round
+            foreach (var column in SpectrumTable.Columns.Cast<DataColumn>().ToArray())
+            {
+                SpectrumTable.Columns.Remove(column);
+            }
+            // delete datatable end 
+
             while (chartSpectrum.Series.Count > 0) { chartSpectrum.Series.RemoveAt(0); }                 // delete all data from chart from previous runs
 
             integrationTime = Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Value * 1000);    // read integration time from input field
             wrapper.setIntegrationTime(selectedSpectrometer, integrationTime);                           // apply integration time   
             lblStatus.Text = wrapper.getFirmwareModel(selectedSpectrometer) + " Spectrometer selected."; // display selected spectrometer
 
+            wrapper.setCorrectForElectricalDark(selectedSpectrometer, Convert.ToInt32(checkBoxElectricDarkCorrection.Checked));
+            wrapper.setCorrectForDetectorNonlinearity(selectedSpectrometer, Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
+            lblStatus.Text = Convert.ToString(Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
+
+
+
             wavelengthArray = (double[])wrapper.getWavelengths(selectedSpectrometer);                    // get wavelenthts from spectrometer   
             spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);                         // get spectrum from spectrometer
             numberOfPixels = spectrumArray.GetLength(0);                                                 // get spectrum lenth   
 
+
+
+            // lblStatus.Text = saturationevents.ToString();
 
             // fill Datatable start
             SpectrumTable.Columns.Add("Wavelength");                                                     // add first column for wavelengths
@@ -83,6 +106,15 @@ namespace MonoSeq
             {
                 myMonoScan.setPositionNM(Convert.ToInt32(k));
                 spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);
+
+                int specmax = wrapper.getMaximumIntensity(selectedSpectrometer);
+                int specpercentil = Convert.ToInt32(specmax - (specmax * 0.05));
+                if (spectrumArray.Max() > specpercentil)
+                {
+                    saturationevents = saturationevents + 1;
+                }
+                lblStatus.Text = saturationevents.ToString();
+
                 SpectrumTable.Columns.Add(k.ToString());
                 SpectrumTable.Rows[0][k.ToString()] = numericUpDownSpectrometerIntegrationTime.Value;
                 SpectrumTable.AcceptChanges();
@@ -105,8 +137,15 @@ namespace MonoSeq
             }
             // add spectral data columns to datatable END
 
+            if (saturationevents > 0)
+            { MessageBox.Show("There have been " + saturationevents.ToString() + " scans that were saturated!");
+            }
+
+            
             //Write Datatable to csv file with comma separator
-            saveFileDialogMonoSeq.ShowDialog();                                 // Dialog to get file location and name
+            //saveFileDialogMonoSeq.ShowDialog();                                 // Dialog to get file location and name
+            if ( saveFileDialogMonoSeq.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            { 
             StringBuilder spectrumString = new StringBuilder();
             IEnumerable<string> columnNames = SpectrumTable.Columns.Cast<DataColumn>().Select(column => column.ColumnName);
             spectrumString.AppendLine(string.Join(",", columnNames));
@@ -120,20 +159,24 @@ namespace MonoSeq
 
             // Write Metadata to txt file, same name as csv but  with *.ini extension
             StringBuilder metadataString = new StringBuilder();
+            metadataString.AppendLine("Timestamp, " + DateTime.Now.ToString());
             metadataString.AppendLine("Spectrometer, " + wrapper.getFirmwareModel(selectedSpectrometer));
             metadataString.AppendLine("Scans to Average, " + wrapper.getScansToAverage(selectedSpectrometer).ToString());
             metadataString.AppendLine("Boxcar, " + wrapper.getBoxcarWidth(selectedSpectrometer).ToString());
+            metadataString.AppendLine("EDC, " + wrapper.getCorrectForElectricalDark(selectedSpectrometer).ToString());
+            metadataString.AppendLine("NLC, " + wrapper.getCorrectForDetectorNonlinearity(selectedSpectrometer).ToString());
+            metadataString.AppendLine("Itegration Time, " + wrapper.getIntegrationTime(selectedSpectrometer).ToString());
+            metadataString.AppendLine("Saturationevents, " + saturationevents.ToString());
+            metadataString.AppendLine("MonoScan Start, " + numericUpDownMonoScanStartWL.Value.ToString());
+            metadataString.AppendLine("MonoScan END, " + numericUpDownMonoScanEndWL.Value.ToString());
+            metadataString.AppendLine("MonoScan Interval, " + numericUpDownMonoScanInterval.Value.ToString());
+            
+
             File.WriteAllText(Path.ChangeExtension(saveFileDialogMonoSeq.FileName,".ini"), metadataString.ToString());
             // Write Metadata End
 
-            // finally delete content of datatable for next round
-            foreach (var column in SpectrumTable.Columns.Cast<DataColumn>().ToArray())
-            {
-                    SpectrumTable.Columns.Remove(column);
-            }
-            // delete datatable end         
-            
-            Console.WriteLine("");                  // just a point to stop for a breakpoint // can be removed         
+   
+            }                 
         }
 
         private void btnRefreshSerialPortList_Click(object sender, EventArgs e)
@@ -143,9 +186,22 @@ namespace MonoSeq
 
         private void btnInitializeMonoScan_Click(object sender, EventArgs e)
         {
-            myMonoScan.openConnection(comboBoxSerialPort.Text);
-            myMonoScan.initialize();
-            myMonoScan.setPositionNM(Convert.ToInt32(numericUpDownMonoScanStartWL.Value));
+            btnInitializeMonoScan.Text = "initializing...";
+            this.Update();
+            try
+            {
+                myMonoScan.openConnection(comboBoxSerialPort.Text);
+                myMonoScan.initialize();
+                myMonoScan.setPositionNM(Convert.ToInt32(numericUpDownMonoScanStartWL.Value));
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message+"\n\rProbably the Monoscan was already initialized");
+            }
+            btnInitializeMonoScan.Text = "Initialzie Monoscan";
+            this.Update();
+     
+
         }
 
         private void lblSpectrometerIntegrationTime_Click(object sender, EventArgs e)
@@ -207,6 +263,11 @@ namespace MonoSeq
         private void numericUpDownMonoScanInterval_ValueChanged(object sender, EventArgs e)
         {
             CheckIntervalLenght();
+        }
+
+        private void buttonSpectrometerAutomaticIntegrationTime_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void UpdateSpectrometerList()               // update combobox with available sepctrometers
