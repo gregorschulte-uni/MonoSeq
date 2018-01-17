@@ -34,7 +34,6 @@ namespace MonoSeq
         int saturationevents = 0;                                       // increased by 1 if a recorded spectrum is saturated
 
         System.Data.DataTable SpectrumTable = new DataTable("SpectrumTable");   // Create datatable for data storage
-        //DataColumn column;                                            // not used, can probably be deleted
         DataRow row;
         
         public frmMonoSeq()                                             // initialize Componets >> generated Code
@@ -169,12 +168,12 @@ namespace MonoSeq
 
    
             }                 
-        }
+        }   // main routine in in here
 
-        private void btnRefreshSerialPortList_Click(object sender, EventArgs e)
+        private void btnRefreshSerialPortList_Click(object sender, EventArgs e)   // Update List of COM Ports, user might have attached new MonoScan
         {
-            UpdatePortList();                       // Update List of COM Ports, user might have attached new MonoScan
-        }
+            UpdatePortList();                       
+        }       
 
         private void btnInitializeMonoScan_Click(object sender, EventArgs e)
         {
@@ -194,12 +193,8 @@ namespace MonoSeq
             this.Update();
      
 
-        }
+        }           // initialize Monoscan
 
-        private void lblSpectrometerIntegrationTime_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void buttonRefreshSpectrometer_Click(object sender, EventArgs e)
         {
@@ -235,7 +230,7 @@ namespace MonoSeq
 
         }
 
-        private void CheckIntervalLenght()
+        private void CheckIntervalLenght()                  // test if interval lenght fits between start and end wavelength
         {
             if (numericUpDownMonoScanInterval.Value > numericUpDownMonoScanEndWL.Value - numericUpDownMonoScanStartWL.Value)
             {
@@ -244,7 +239,7 @@ namespace MonoSeq
                 numericUpDownMonoScanEndWL.Value = 750;
                 numericUpDownMonoScanInterval.Value = 25;
             }
-        }
+        }                           
 
         private void UpdatePortList()                       // update combobox with available COM Ports
         {
