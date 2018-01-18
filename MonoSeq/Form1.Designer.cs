@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lblStatus = new System.Windows.Forms.Label();
             this.btnStartRun = new System.Windows.Forms.Button();
             this.chartSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBoxMonoScan = new System.Windows.Forms.GroupBox();
+            this.numericUpDownMonoScanCustomWL = new System.Windows.Forms.NumericUpDown();
+            this.btnGoToStartPosition = new System.Windows.Forms.Button();
             this.lblMonoScanInterval = new System.Windows.Forms.Label();
             this.numericUpDownMonoScanInterval = new System.Windows.Forms.NumericUpDown();
             this.lblMonoScanEndWL = new System.Windows.Forms.Label();
@@ -44,6 +46,7 @@
             this.btnRefreshSerialPortList = new System.Windows.Forms.Button();
             this.comboBoxSerialPort = new System.Windows.Forms.ComboBox();
             this.groupBoxSpectrometer = new System.Windows.Forms.GroupBox();
+            this.buttonSpectrometerGetSpectrum = new System.Windows.Forms.Button();
             this.checkBoxNonLinearityCorrection = new System.Windows.Forms.CheckBox();
             this.checkBoxElectricDarkCorrection = new System.Windows.Forms.CheckBox();
             this.buttonSpectrometerAutomaticIntegrationTime = new System.Windows.Forms.Button();
@@ -54,6 +57,7 @@
             this.saveFileDialogMonoSeq = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.chartSpectrum)).BeginInit();
             this.groupBoxMonoScan.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanCustomWL)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanEndWL)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanStartWL)).BeginInit();
@@ -83,10 +87,10 @@
             // 
             // chartSpectrum
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chartSpectrum.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chartSpectrum.Legends.Add(legend3);
+            chartArea1.Name = "ChartArea1";
+            this.chartSpectrum.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartSpectrum.Legends.Add(legend1);
             this.chartSpectrum.Location = new System.Drawing.Point(15, 12);
             this.chartSpectrum.Name = "chartSpectrum";
             this.chartSpectrum.Size = new System.Drawing.Size(898, 462);
@@ -96,6 +100,8 @@
             // groupBoxMonoScan
             // 
             this.groupBoxMonoScan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxMonoScan.Controls.Add(this.numericUpDownMonoScanCustomWL);
+            this.groupBoxMonoScan.Controls.Add(this.btnGoToStartPosition);
             this.groupBoxMonoScan.Controls.Add(this.lblMonoScanInterval);
             this.groupBoxMonoScan.Controls.Add(this.numericUpDownMonoScanInterval);
             this.groupBoxMonoScan.Controls.Add(this.lblMonoScanEndWL);
@@ -111,6 +117,39 @@
             this.groupBoxMonoScan.TabIndex = 3;
             this.groupBoxMonoScan.TabStop = false;
             this.groupBoxMonoScan.Text = "Mono Scan";
+            // 
+            // numericUpDownMonoScanCustomWL
+            // 
+            this.numericUpDownMonoScanCustomWL.Location = new System.Drawing.Point(134, 51);
+            this.numericUpDownMonoScanCustomWL.Maximum = new decimal(new int[] {
+            800,
+            0,
+            0,
+            0});
+            this.numericUpDownMonoScanCustomWL.Minimum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.numericUpDownMonoScanCustomWL.Name = "numericUpDownMonoScanCustomWL";
+            this.numericUpDownMonoScanCustomWL.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownMonoScanCustomWL.TabIndex = 10;
+            this.numericUpDownMonoScanCustomWL.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericUpDownMonoScanCustomWL.Value = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            // 
+            // btnGoToStartPosition
+            // 
+            this.btnGoToStartPosition.Location = new System.Drawing.Point(260, 48);
+            this.btnGoToStartPosition.Name = "btnGoToStartPosition";
+            this.btnGoToStartPosition.Size = new System.Drawing.Size(113, 23);
+            this.btnGoToStartPosition.TabIndex = 9;
+            this.btnGoToStartPosition.Text = "Go To Position";
+            this.btnGoToStartPosition.UseVisualStyleBackColor = true;
+            this.btnGoToStartPosition.Click += new System.EventHandler(this.btnGoToStartPosition_Click);
             // 
             // lblMonoScanInterval
             // 
@@ -235,7 +274,7 @@
             // 
             this.btnRefreshSerialPortList.Location = new System.Drawing.Point(134, 18);
             this.btnRefreshSerialPortList.Name = "btnRefreshSerialPortList";
-            this.btnRefreshSerialPortList.Size = new System.Drawing.Size(137, 23);
+            this.btnRefreshSerialPortList.Size = new System.Drawing.Size(120, 23);
             this.btnRefreshSerialPortList.TabIndex = 1;
             this.btnRefreshSerialPortList.Text = "Refresh COM Ports";
             this.btnRefreshSerialPortList.UseVisualStyleBackColor = true;
@@ -252,6 +291,7 @@
             // groupBoxSpectrometer
             // 
             this.groupBoxSpectrometer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxSpectrometer.Controls.Add(this.buttonSpectrometerGetSpectrum);
             this.groupBoxSpectrometer.Controls.Add(this.checkBoxNonLinearityCorrection);
             this.groupBoxSpectrometer.Controls.Add(this.checkBoxElectricDarkCorrection);
             this.groupBoxSpectrometer.Controls.Add(this.buttonSpectrometerAutomaticIntegrationTime);
@@ -265,6 +305,16 @@
             this.groupBoxSpectrometer.TabIndex = 4;
             this.groupBoxSpectrometer.TabStop = false;
             this.groupBoxSpectrometer.Text = "Spectrometer";
+            // 
+            // buttonSpectrometerGetSpectrum
+            // 
+            this.buttonSpectrometerGetSpectrum.Location = new System.Drawing.Point(336, 20);
+            this.buttonSpectrometerGetSpectrum.Name = "buttonSpectrometerGetSpectrum";
+            this.buttonSpectrometerGetSpectrum.Size = new System.Drawing.Size(139, 23);
+            this.buttonSpectrometerGetSpectrum.TabIndex = 7;
+            this.buttonSpectrometerGetSpectrum.Text = "Get Single Spectrum";
+            this.buttonSpectrometerGetSpectrum.UseVisualStyleBackColor = true;
+            this.buttonSpectrometerGetSpectrum.Click += new System.EventHandler(this.buttonSpectrometerGetSpectrum_Click);
             // 
             // checkBoxNonLinearityCorrection
             // 
@@ -292,8 +342,7 @@
             // 
             // buttonSpectrometerAutomaticIntegrationTime
             // 
-            this.buttonSpectrometerAutomaticIntegrationTime.Enabled = false;
-            this.buttonSpectrometerAutomaticIntegrationTime.Location = new System.Drawing.Point(306, 45);
+            this.buttonSpectrometerAutomaticIntegrationTime.Location = new System.Drawing.Point(336, 45);
             this.buttonSpectrometerAutomaticIntegrationTime.Name = "buttonSpectrometerAutomaticIntegrationTime";
             this.buttonSpectrometerAutomaticIntegrationTime.Size = new System.Drawing.Size(75, 23);
             this.buttonSpectrometerAutomaticIntegrationTime.TabIndex = 4;
@@ -377,6 +426,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartSpectrum)).EndInit();
             this.groupBoxMonoScan.ResumeLayout(false);
             this.groupBoxMonoScan.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanCustomWL)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanEndWL)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanStartWL)).EndInit();
@@ -412,6 +462,9 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialogMonoSeq;
         private System.Windows.Forms.CheckBox checkBoxNonLinearityCorrection;
         private System.Windows.Forms.CheckBox checkBoxElectricDarkCorrection;
+        private System.Windows.Forms.Button btnGoToStartPosition;
+        private System.Windows.Forms.NumericUpDown numericUpDownMonoScanCustomWL;
+        private System.Windows.Forms.Button buttonSpectrometerGetSpectrum;
     }
 }
 

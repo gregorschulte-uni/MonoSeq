@@ -35,6 +35,8 @@ namespace MonoSeq
 
         System.Data.DataTable SpectrumTable = new DataTable("SpectrumTable");   // Create datatable for data storage
         DataRow row;
+
+        
         
         public frmMonoSeq()                                             // initialize Componets >> generated Code
         {
@@ -50,8 +52,9 @@ namespace MonoSeq
 
         private void btnStartRun_Click(object sender, EventArgs e)
         {
-            
+
             // Adjust Chart area to scan area
+            chartSpectrum.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
             chartSpectrum.ChartAreas[0].AxisX.Minimum = Convert.ToInt32(numericUpDownMonoScanStartWL.Value);
             chartSpectrum.ChartAreas[0].AxisX.Maximum = Convert.ToInt32(numericUpDownMonoScanEndWL.Value);
             chartSpectrum.ChartAreas[0].AxisY.Minimum = -100;
@@ -253,7 +256,7 @@ namespace MonoSeq
 
         private void buttonSpectrometerAutomaticIntegrationTime_Click(object sender, EventArgs e)
         {
-            
+            adjustIntegrationTime();
         }
 
         private void UpdateSpectrometerList()               // update combobox with available sepctrometers
@@ -277,6 +280,160 @@ namespace MonoSeq
             else
             {
                 MessageBox.Show("No Spectrometers attached");
+            }
+        }
+
+        private void adjustIntegrationTime()
+        {
+            double[] tempSpectrumArray = wrapper.getSpectrum(selectedSpectrometer);
+            int maxIntensity = wrapper.getMaximumIntensity(selectedSpectrometer);
+            int maxIntensity95 = Convert.ToInt32(maxIntensity * 0.95);
+            double currentMaximum = tempSpectrumArray.Max();
+            int myIntegrationtime;
+            int tempIntegrationTime;
+
+            wrapper.setIntegrationTime(selectedSpectrometer, Convert.ToInt32( numericUpDownSpectrometerIntegrationTime.Value * 1000));
+
+            if (currentMaximum < maxIntensity95 )
+            {
+                // increase integrationtime by factor
+                double factor = maxIntensity95 / currentMaximum;
+
+                tempIntegrationTime = Convert.ToInt32(Convert.ToDouble(numericUpDownSpectrometerIntegrationTime.Value) * factor);
+
+                myIntegrationtime = Clamp(tempIntegrationTime, Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Minimum), Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Maximum));
+
+                numericUpDownSpectrometerIntegrationTime.Value = myIntegrationtime;             
+
+
+            }
+            else if (currentMaximum > maxIntensity95)
+            {
+                // reduce integrationtime by factor
+                int maxcounter = 0;
+                
+                for ( int i =0; i < tempSpectrumArray.Length; i++)
+                {
+                    if (tempSpectrumArray[i]==currentMaximum)
+                    {
+                        maxcounter++;
+                        lblStatus.Text = maxcounter.ToString();
+                    }
+                }
+
+                if (maxcounter > 1)
+                { 
+                tempIntegrationTime = Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Value  / maxcounter * 9);
+
+                myIntegrationtime = Clamp(tempIntegrationTime, Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Minimum), Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Maximum));
+
+                numericUpDownSpectrometerIntegrationTime.Value = myIntegrationtime;
+                }
+            }
+            else
+            {
+                // do nothing
+            }
+
+        }
+
+        public static int Clamp(int value, int min, int max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
+        }
+
+        private void btnGoToStartPosition_Click(object sender, EventArgs e)
+        {
+            myMonoScan.setPositionNM(Convert.ToInt32(numericUpDownMonoScanCustomWL.Value));
+        }
+
+
+
+
+        private void buttonSpectrometerGetSpectrum_Click(object sender, EventArgs e)
+        {
+            // Adjust Chart area to scan area
+            chartSpectrum.ChartAreas[0].AxisX.Minimum = Convert.ToInt32(numericUpDownMonoScanStartWL.Value);
+            chartSpectrum.ChartAreas[0].AxisX.Maximum = Convert.ToInt32(numericUpDownMonoScanEndWL.Value);
+            chartSpectrum.ChartAreas[0].AxisY.Minimum = -100;
+
+            // reset variables to remove data from previous rounds
+            saturationevents = 0;                                                                       // reset saturationevents from previous runs
+            SpectrumTable.Reset();                                                                      // Clear datatable from data of previous runs
+            chartSpectrum.Series.Clear();                                                               // Clear chart from data of previous runs
+
+            // read variables from interface
+            integrationTime = Convert.ToInt32(numericUpDownSpectrometerIntegrationTime.Value * 1000);    // read integration time from input field
+            wrapper.setIntegrationTime(selectedSpectrometer, integrationTime);                           // apply integration time   
+            lblStatus.Text = wrapper.getFirmwareModel(selectedSpectrometer) + " Spectrometer selected."; // display selected spectrometer
+
+            wrapper.setCorrectForElectricalDark(selectedSpectrometer, Convert.ToInt32(checkBoxElectricDarkCorrection.Checked));
+            wrapper.setCorrectForDetectorNonlinearity(selectedSpectrometer, Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
+            lblStatus.Text = Convert.ToString(Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
+
+            // get spectrum from spectrometer
+            wavelengthArray = (double[])wrapper.getWavelengths(selectedSpectrometer);                    // get wavelenthts from spectrometer   
+            spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);                         // get spectrum from spectrometer
+                                                                                                         //numberOfPixels = spectrumArray.GetLength(0);                                                 // get spectrum length   
+
+            // fill Datatable start
+            SpectrumTable.Columns.Add("Wavelength");                                                     // add first column for wavelengths
+
+            // insert first row for integration time data START
+            row = SpectrumTable.NewRow();
+            row["Wavelength"] = "integrationTime in ms";
+            SpectrumTable.Rows.Add(row);
+            // insert first row for integration time data END
+
+            // add wavelength values in first column START
+            for (int i = 0; i < spectrumArray.GetLength(0); i++)
+            {
+                row = SpectrumTable.NewRow();
+                row["Wavelength"] = Math.Round(wavelengthArray[i], 2);
+                SpectrumTable.Rows.Add(row);
+            }
+            // add wavelength values in first column END
+
+            // add spectral data columns to datatable START
+            //for (decimal k = numericUpDownMonoScanStartWL.Value; k < numericUpDownMonoScanEndWL.Value; k = k + numericUpDownMonoScanInterval.Value)
+            //{
+                //myMonoScan.setPositionNM(Convert.ToInt32(k));
+                spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);
+
+                int specmax = wrapper.getMaximumIntensity(selectedSpectrometer);
+                int specpercentil = Convert.ToInt32(specmax - (specmax * 0.05));
+                if (spectrumArray.Max() > specpercentil)
+                {
+                    saturationevents = saturationevents + 1;
+                }
+                lblStatus.Text = saturationevents.ToString() + " Saturation events occured during scan.";
+
+                //SpectrumTable.Columns.Add(k.ToString());
+                //SpectrumTable.Rows[0][k.ToString()] = numericUpDownSpectrometerIntegrationTime.Value;
+                //SpectrumTable.AcceptChanges();
+
+                //for (int i = 0; i < spectrumArray.GetLength(0); i++)
+               // {
+                //    SpectrumTable.Rows[i + 1][k.ToString()] = spectrumArray[i];
+               //     SpectrumTable.AcceptChanges();
+                //}
+
+                // add spectral data into series for chart START
+                chartSpectrum.Series.Add("Spectrum");
+                chartSpectrum.Series["Spectrum"].ChartType = SeriesChartType.Line;
+                for (int l = 1; l < spectrumArray.GetLength(0); l++)
+                {
+                    chartSpectrum.Series["Spectrum"].Points.AddXY(Math.Round(wavelengthArray[l], 0), spectrumArray[l]);
+                }
+                this.Update();                                                  // Update Interface to dispaly chart
+                // add spectral data into series for chart END
+            //}
+            // add spectral data columns to datatable END
+
+            // give warning when saturations occured during run
+            if (saturationevents > 0)
+            {
+                MessageBox.Show("There have been " + saturationevents.ToString() + " scans that were saturated!");
             }
         }
     }
