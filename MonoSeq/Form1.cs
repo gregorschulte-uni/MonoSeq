@@ -120,7 +120,7 @@ namespace MonoSeq
                 // add spectral data into series for chart START
                 chartSpectrum.Series.Add(k.ToString());
                 chartSpectrum.Series[k.ToString()].ChartType = SeriesChartType.Line;
-                for (int l = 0; l < spectrumArray.GetLength(0); l++)
+                for (int l = 1; l < spectrumArray.GetLength(0); l++)
                 {
                     chartSpectrum.Series[k.ToString()].Points.AddXY(Math.Round(wavelengthArray[l], 0), spectrumArray[l]);
                 }
@@ -194,7 +194,6 @@ namespace MonoSeq
      
 
         }           // initialize Monoscan
-
 
         private void buttonRefreshSpectrometer_Click(object sender, EventArgs e)
         {
