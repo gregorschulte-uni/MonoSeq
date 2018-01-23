@@ -383,6 +383,7 @@ namespace MonoSeq
 
             wrapper.setCorrectForElectricalDark(selectedSpectrometer, Convert.ToInt32(checkBoxElectricDarkCorrection.Checked));
             wrapper.setCorrectForDetectorNonlinearity(selectedSpectrometer, Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
+            wrapper.setScansToAverage(selectedSpectrometer, Convert.ToInt32(numericUpDownSpectrometerScansToAverage.Value));
             lblStatus.Text = Convert.ToString(Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
 
             // get spectrum from spectrometer
