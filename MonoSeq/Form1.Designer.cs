@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lblStatus = new System.Windows.Forms.Label();
             this.btnStartRun = new System.Windows.Forms.Button();
             this.chartSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -55,6 +55,8 @@
             this.buttonRefreshSpectrometer = new System.Windows.Forms.Button();
             this.comboBoxSpectrometer = new System.Windows.Forms.ComboBox();
             this.saveFileDialogMonoSeq = new System.Windows.Forms.SaveFileDialog();
+            this.numericUpDownSpectrometerScansToAverage = new System.Windows.Forms.NumericUpDown();
+            this.lblSpectrometerScansToAverage = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chartSpectrum)).BeginInit();
             this.groupBoxMonoScan.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanCustomWL)).BeginInit();
@@ -63,6 +65,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMonoScanStartWL)).BeginInit();
             this.groupBoxSpectrometer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpectrometerIntegrationTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpectrometerScansToAverage)).BeginInit();
             this.SuspendLayout();
             // 
             // lblStatus
@@ -77,9 +80,9 @@
             // 
             // btnStartRun
             // 
-            this.btnStartRun.Location = new System.Drawing.Point(838, 486);
+            this.btnStartRun.Location = new System.Drawing.Point(771, 486);
             this.btnStartRun.Name = "btnStartRun";
-            this.btnStartRun.Size = new System.Drawing.Size(75, 23);
+            this.btnStartRun.Size = new System.Drawing.Size(136, 23);
             this.btnStartRun.TabIndex = 1;
             this.btnStartRun.Text = "Start";
             this.btnStartRun.UseVisualStyleBackColor = true;
@@ -87,10 +90,10 @@
             // 
             // chartSpectrum
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartSpectrum.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartSpectrum.Legends.Add(legend1);
+            chartArea3.Name = "ChartArea1";
+            this.chartSpectrum.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartSpectrum.Legends.Add(legend3);
             this.chartSpectrum.Location = new System.Drawing.Point(15, 12);
             this.chartSpectrum.Name = "chartSpectrum";
             this.chartSpectrum.Size = new System.Drawing.Size(898, 462);
@@ -120,7 +123,7 @@
             // 
             // numericUpDownMonoScanCustomWL
             // 
-            this.numericUpDownMonoScanCustomWL.Location = new System.Drawing.Point(134, 51);
+            this.numericUpDownMonoScanCustomWL.Location = new System.Drawing.Point(133, 51);
             this.numericUpDownMonoScanCustomWL.Maximum = new decimal(new int[] {
             800,
             0,
@@ -143,9 +146,9 @@
             // 
             // btnGoToStartPosition
             // 
-            this.btnGoToStartPosition.Location = new System.Drawing.Point(260, 48);
+            this.btnGoToStartPosition.Location = new System.Drawing.Point(260, 50);
             this.btnGoToStartPosition.Name = "btnGoToStartPosition";
-            this.btnGoToStartPosition.Size = new System.Drawing.Size(113, 23);
+            this.btnGoToStartPosition.Size = new System.Drawing.Size(136, 22);
             this.btnGoToStartPosition.TabIndex = 9;
             this.btnGoToStartPosition.Text = "Go To Position";
             this.btnGoToStartPosition.UseVisualStyleBackColor = true;
@@ -262,9 +265,9 @@
             // 
             // btnInitializeMonoScan
             // 
-            this.btnInitializeMonoScan.Location = new System.Drawing.Point(7, 48);
+            this.btnInitializeMonoScan.Location = new System.Drawing.Point(7, 51);
             this.btnInitializeMonoScan.Name = "btnInitializeMonoScan";
-            this.btnInitializeMonoScan.Size = new System.Drawing.Size(120, 23);
+            this.btnInitializeMonoScan.Size = new System.Drawing.Size(120, 21);
             this.btnInitializeMonoScan.TabIndex = 2;
             this.btnInitializeMonoScan.Text = "Initialize MonoScan";
             this.btnInitializeMonoScan.UseVisualStyleBackColor = true;
@@ -272,9 +275,9 @@
             // 
             // btnRefreshSerialPortList
             // 
-            this.btnRefreshSerialPortList.Location = new System.Drawing.Point(134, 18);
+            this.btnRefreshSerialPortList.Location = new System.Drawing.Point(134, 20);
             this.btnRefreshSerialPortList.Name = "btnRefreshSerialPortList";
-            this.btnRefreshSerialPortList.Size = new System.Drawing.Size(120, 23);
+            this.btnRefreshSerialPortList.Size = new System.Drawing.Size(120, 25);
             this.btnRefreshSerialPortList.TabIndex = 1;
             this.btnRefreshSerialPortList.Text = "Refresh COM Ports";
             this.btnRefreshSerialPortList.UseVisualStyleBackColor = true;
@@ -291,6 +294,8 @@
             // groupBoxSpectrometer
             // 
             this.groupBoxSpectrometer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxSpectrometer.Controls.Add(this.lblSpectrometerScansToAverage);
+            this.groupBoxSpectrometer.Controls.Add(this.numericUpDownSpectrometerScansToAverage);
             this.groupBoxSpectrometer.Controls.Add(this.buttonSpectrometerGetSpectrum);
             this.groupBoxSpectrometer.Controls.Add(this.checkBoxNonLinearityCorrection);
             this.groupBoxSpectrometer.Controls.Add(this.checkBoxElectricDarkCorrection);
@@ -310,7 +315,7 @@
             // 
             this.buttonSpectrometerGetSpectrum.Location = new System.Drawing.Point(336, 20);
             this.buttonSpectrometerGetSpectrum.Name = "buttonSpectrometerGetSpectrum";
-            this.buttonSpectrometerGetSpectrum.Size = new System.Drawing.Size(139, 23);
+            this.buttonSpectrometerGetSpectrum.Size = new System.Drawing.Size(139, 27);
             this.buttonSpectrometerGetSpectrum.TabIndex = 7;
             this.buttonSpectrometerGetSpectrum.Text = "Get Single Spectrum";
             this.buttonSpectrometerGetSpectrum.UseVisualStyleBackColor = true;
@@ -321,7 +326,7 @@
             this.checkBoxNonLinearityCorrection.AutoSize = true;
             this.checkBoxNonLinearityCorrection.Checked = true;
             this.checkBoxNonLinearityCorrection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxNonLinearityCorrection.Location = new System.Drawing.Point(14, 99);
+            this.checkBoxNonLinearityCorrection.Location = new System.Drawing.Point(14, 131);
             this.checkBoxNonLinearityCorrection.Name = "checkBoxNonLinearityCorrection";
             this.checkBoxNonLinearityCorrection.Size = new System.Drawing.Size(139, 17);
             this.checkBoxNonLinearityCorrection.TabIndex = 6;
@@ -333,7 +338,7 @@
             this.checkBoxElectricDarkCorrection.AutoSize = true;
             this.checkBoxElectricDarkCorrection.Checked = true;
             this.checkBoxElectricDarkCorrection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxElectricDarkCorrection.Location = new System.Drawing.Point(14, 75);
+            this.checkBoxElectricDarkCorrection.Location = new System.Drawing.Point(14, 107);
             this.checkBoxElectricDarkCorrection.Name = "checkBoxElectricDarkCorrection";
             this.checkBoxElectricDarkCorrection.Size = new System.Drawing.Size(138, 17);
             this.checkBoxElectricDarkCorrection.TabIndex = 5;
@@ -342,11 +347,12 @@
             // 
             // buttonSpectrometerAutomaticIntegrationTime
             // 
-            this.buttonSpectrometerAutomaticIntegrationTime.Location = new System.Drawing.Point(336, 45);
+            this.buttonSpectrometerAutomaticIntegrationTime.Enabled = false;
+            this.buttonSpectrometerAutomaticIntegrationTime.Location = new System.Drawing.Point(336, 48);
             this.buttonSpectrometerAutomaticIntegrationTime.Name = "buttonSpectrometerAutomaticIntegrationTime";
-            this.buttonSpectrometerAutomaticIntegrationTime.Size = new System.Drawing.Size(75, 23);
+            this.buttonSpectrometerAutomaticIntegrationTime.Size = new System.Drawing.Size(139, 23);
             this.buttonSpectrometerAutomaticIntegrationTime.TabIndex = 4;
-            this.buttonSpectrometerAutomaticIntegrationTime.Text = "Auto";
+            this.buttonSpectrometerAutomaticIntegrationTime.Text = "Auto Integration Time";
             this.buttonSpectrometerAutomaticIntegrationTime.UseVisualStyleBackColor = true;
             this.buttonSpectrometerAutomaticIntegrationTime.Click += new System.EventHandler(this.buttonSpectrometerAutomaticIntegrationTime_Click);
             // 
@@ -386,7 +392,7 @@
             // 
             this.buttonRefreshSpectrometer.Location = new System.Drawing.Point(141, 20);
             this.buttonRefreshSpectrometer.Name = "buttonRefreshSpectrometer";
-            this.buttonRefreshSpectrometer.Size = new System.Drawing.Size(189, 23);
+            this.buttonRefreshSpectrometer.Size = new System.Drawing.Size(189, 27);
             this.buttonRefreshSpectrometer.TabIndex = 1;
             this.buttonRefreshSpectrometer.Text = "Refresh Spectrometers";
             this.buttonRefreshSpectrometer.UseVisualStyleBackColor = true;
@@ -406,6 +412,38 @@
             this.saveFileDialogMonoSeq.Filter = "csv Files|*.csv|All Files|*.*";
             this.saveFileDialogMonoSeq.RestoreDirectory = true;
             this.saveFileDialogMonoSeq.ShowHelp = true;
+            // 
+            // numericUpDownSpectrometerScansToAverage
+            // 
+            this.numericUpDownSpectrometerScansToAverage.Location = new System.Drawing.Point(13, 78);
+            this.numericUpDownSpectrometerScansToAverage.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.numericUpDownSpectrometerScansToAverage.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownSpectrometerScansToAverage.Name = "numericUpDownSpectrometerScansToAverage";
+            this.numericUpDownSpectrometerScansToAverage.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownSpectrometerScansToAverage.TabIndex = 8;
+            this.numericUpDownSpectrometerScansToAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericUpDownSpectrometerScansToAverage.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblSpectrometerScansToAverage
+            // 
+            this.lblSpectrometerScansToAverage.AutoSize = true;
+            this.lblSpectrometerScansToAverage.Location = new System.Drawing.Point(141, 80);
+            this.lblSpectrometerScansToAverage.Name = "lblSpectrometerScansToAverage";
+            this.lblSpectrometerScansToAverage.Size = new System.Drawing.Size(92, 13);
+            this.lblSpectrometerScansToAverage.TabIndex = 9;
+            this.lblSpectrometerScansToAverage.Text = "Scans to Average";
             // 
             // frmMonoSeq
             // 
@@ -433,6 +471,7 @@
             this.groupBoxSpectrometer.ResumeLayout(false);
             this.groupBoxSpectrometer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpectrometerIntegrationTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpectrometerScansToAverage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -465,6 +504,8 @@
         private System.Windows.Forms.Button btnGoToStartPosition;
         private System.Windows.Forms.NumericUpDown numericUpDownMonoScanCustomWL;
         private System.Windows.Forms.Button buttonSpectrometerGetSpectrum;
+        private System.Windows.Forms.Label lblSpectrometerScansToAverage;
+        private System.Windows.Forms.NumericUpDown numericUpDownSpectrometerScansToAverage;
     }
 }
 

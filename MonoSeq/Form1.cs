@@ -52,7 +52,8 @@ namespace MonoSeq
 
         private void btnStartRun_Click(object sender, EventArgs e)
         {
-
+            btnStartRun.Text = "Scan Started...";
+            this.Update();
             // Adjust Chart area to scan area
             chartSpectrum.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
             chartSpectrum.ChartAreas[0].AxisX.Minimum = Convert.ToInt32(numericUpDownMonoScanStartWL.Value);
@@ -71,8 +72,10 @@ namespace MonoSeq
 
             wrapper.setCorrectForElectricalDark(selectedSpectrometer, Convert.ToInt32(checkBoxElectricDarkCorrection.Checked));
             wrapper.setCorrectForDetectorNonlinearity(selectedSpectrometer, Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
-            lblStatus.Text = Convert.ToString(Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
-            
+            wrapper.setScansToAverage(selectedSpectrometer, Convert.ToInt32(numericUpDownSpectrometerScansToAverage.Value));
+            ///lblStatus.Text = Convert.ToString(Convert.ToInt32(checkBoxNonLinearityCorrection.Checked));
+
+
             // get spectrum from spectrometer
             wavelengthArray = (double[])wrapper.getWavelengths(selectedSpectrometer);                    // get wavelenthts from spectrometer   
             spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);                         // get spectrum from spectrometer
@@ -91,15 +94,19 @@ namespace MonoSeq
             for (int i = 0; i < spectrumArray.GetLength(0); i++)
             {
                 row = SpectrumTable.NewRow();
-                row["Wavelength"] = Math.Round(wavelengthArray[i], 2);
+                row["Wavelength"] = wavelengthArray[i];
+                //row["Wavelength"] = Math.Round(wavelengthArray[i], 2);
                 SpectrumTable.Rows.Add(row);
             }
             // add wavelength values in first column END
 
             // add spectral data columns to datatable START
-            for (decimal k = numericUpDownMonoScanStartWL.Value; k < numericUpDownMonoScanEndWL.Value; k = k + numericUpDownMonoScanInterval.Value)
+            for (decimal k = numericUpDownMonoScanStartWL.Value; k <= numericUpDownMonoScanEndWL.Value; k = k + numericUpDownMonoScanInterval.Value)
             {
                 myMonoScan.setPositionNM(Convert.ToInt32(k));
+
+                System.Threading.Thread.Sleep(500);
+                
                 spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);
 
                 int specmax = wrapper.getMaximumIntensity(selectedSpectrometer);
@@ -161,16 +168,18 @@ namespace MonoSeq
             metadataString.AppendLine("Boxcar, " + wrapper.getBoxcarWidth(selectedSpectrometer).ToString());
             metadataString.AppendLine("EDC, " + wrapper.getCorrectForElectricalDark(selectedSpectrometer).ToString());
             metadataString.AppendLine("NLC, " + wrapper.getCorrectForDetectorNonlinearity(selectedSpectrometer).ToString());
-            metadataString.AppendLine("Itegration Time, " + wrapper.getIntegrationTime(selectedSpectrometer).ToString());
+            metadataString.AppendLine("Itegration Time (as milliseconds), " + (wrapper.getIntegrationTime(selectedSpectrometer)/1000).ToString());
             metadataString.AppendLine("Saturationevents, " + saturationevents.ToString());
             metadataString.AppendLine("MonoScan Start, " + numericUpDownMonoScanStartWL.Value.ToString());
             metadataString.AppendLine("MonoScan END, " + numericUpDownMonoScanEndWL.Value.ToString());
             metadataString.AppendLine("MonoScan Interval, " + numericUpDownMonoScanInterval.Value.ToString());
-            File.WriteAllText(Path.ChangeExtension(saveFileDialogMonoSeq.FileName,".ini"), metadataString.ToString());
+            File.WriteAllText(Path.ChangeExtension(saveFileDialogMonoSeq.FileName,".txt"), metadataString.ToString());
             // Write Metadata End
 
    
-            }                 
+            }
+            btnStartRun.Text = "Start";
+            this.Update();
         }   // main routine in in here
 
         private void btnRefreshSerialPortList_Click(object sender, EventArgs e)   // Update List of COM Ports, user might have attached new MonoScan
@@ -344,7 +353,12 @@ namespace MonoSeq
 
         private void btnGoToStartPosition_Click(object sender, EventArgs e)
         {
+            btnGoToStartPosition.Text = "going to " + numericUpDownMonoScanCustomWL.Value.ToString() + "...";
+            this.Update();
             myMonoScan.setPositionNM(Convert.ToInt32(numericUpDownMonoScanCustomWL.Value));
+            btnGoToStartPosition.Text = "Go To Position";
+            this.Update();
+
         }
 
 
@@ -389,7 +403,8 @@ namespace MonoSeq
             for (int i = 0; i < spectrumArray.GetLength(0); i++)
             {
                 row = SpectrumTable.NewRow();
-                row["Wavelength"] = Math.Round(wavelengthArray[i], 2);
+                row["Wavelength"] = wavelengthArray[i];
+                //row["Wavelength"] = Math.Round(wavelengthArray[i], 2);
                 SpectrumTable.Rows.Add(row);
             }
             // add wavelength values in first column END
