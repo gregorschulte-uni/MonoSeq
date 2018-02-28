@@ -105,7 +105,12 @@ namespace MonoSeq
             {
                 myMonoScan.setPositionNM(Convert.ToInt32(k));
 
-                System.Threading.Thread.Sleep(500);
+               
+               System.Threading.Thread.Sleep(millisecondsTimeout:integrationTime/1000);
+
+         
+               // while(myMonoScan.positionReached == 0)
+               // { System.Threading.Thread.Sleep(millisecondsTimeout: 5); }
                 
                 spectrumArray = (double[])wrapper.getSpectrum(selectedSpectrometer);
 
